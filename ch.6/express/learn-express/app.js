@@ -50,8 +50,8 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.message = err.message; // 템플릿 엔진에 변수 주입
+  res.locals.error = req.app.get("env") === "development" ? err : {}; // 배포 환경일 경우, 메세지를 노출하지 않음
 
   // render the error page
   res.status(err.status || 500);
