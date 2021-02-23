@@ -47,7 +47,7 @@ function getComment(id) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       var comments = JSON.parse(xhr.responseText);
-      var tbody = document.querySelectorAll("#comment-list tbody");
+      var tbody = document.querySelector("#comment-list tbody");
       tbody.innerHTML = "";
       comments.map(function (comment) {
         var row = document.createElement("tr");
@@ -129,7 +129,7 @@ document.getElementById("user-form").addEventListener("submit", function (e) {
   }
   var xhr = new XMLHttpRequest();
   xhr.onload = function () {
-    if (xhr.status === 200) {
+    if (xhr.status === 201) {
       console.log(xhr.responseText);
       getUser();
     } else {
@@ -159,7 +159,7 @@ document
     }
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
-      if (xhr.status === 200) {
+      if (xhr.status === 201) {
         console.log(xhr.responseText);
         getComment(id);
       } else {
