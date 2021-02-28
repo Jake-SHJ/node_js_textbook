@@ -5,6 +5,7 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const { User } = require("../models");
 
 const router = express.Router();
+// 회원가입 라우터
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
@@ -25,7 +26,9 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     return next(err);
   }
 });
+// 로그인 라우터
 router.post("/login", isNotLoggedIn, (req, res, next) => {
+  // 로그인 전략 수행 (LocalStrategy) => 전략 수행후 반환되는 done(arg) 의 arg 가 authenticate의 두번째 인자인 함수로 전달
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
       console.error(authError);
@@ -44,11 +47,13 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
     });
   })(req, res, next);
 });
+// 로그아웃 라우터
 router.get("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
   res.redirect("/");
 });
+// 카카오 로그인 전략 라우터, 로컬과 다르게 콜백 함수가 적용되지 않음
 router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/kakao/callback",
