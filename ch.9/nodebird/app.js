@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
-const passport = require("passport");
+const passport = require("passport"); // = ("./passport/index.js")와 같음
 require("dotenv").config();
 
 const pageRouter = require("./routes/page");
@@ -40,8 +40,8 @@ app.use(
   })
 );
 app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize()); // req 객체에 passport 설정을 심는다.
+app.use(passport.session()); // req.session 객체에 passport 정보를 저장, req.session이 필요하므로 express-session 미들웨어보다 뒤에 연결
 
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
