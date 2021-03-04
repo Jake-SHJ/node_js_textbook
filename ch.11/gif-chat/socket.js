@@ -1,14 +1,18 @@
 const SocketIO = require("socket.io");
 const axios = require("axios");
+const cookieParser = require("cookie-parser");
 
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: "/socket.io" });
   app.set("io", io);
   const room = io.of("/room");
   const chat = io.of("/chat");
-  io.use((socket, next) => {
-    sessionMiddleware(socket.request, socket.request.res, next);
-  });
+
+  const wrap = (middleware) => (socket, next) =>
+    middleware(socket.request, {}, next);
+  chat.use(wrap(cookieParser(process.env.COOKIE_SECRET)));
+  chat.use(wrap(sessionMiddleware));
+
   room.on("connection", (socket) => {
     console.log("room 네임스페이스에 접속");
     socket.on("disconnect", () => {
@@ -33,8 +37,10 @@ module.exports = (server, app, sessionMiddleware) => {
     socket.on("disconnect", () => {
       console.log("chat 네임스페이스 접속 해제");
       socket.leave(roomId);
-      const currentRoom = socket.adapter.rooms[roomId];
+      const currentRoom = socket.adapter.rooms.get(roomId);
+      console.log(currentRoom);
       const userCount = currentRoom ? currentRoom.length : 0;
+      console.log(userCount);
       if (userCount === 0) {
         axios
           .delete(`http://localhost:8005/room/${roomId}`)
