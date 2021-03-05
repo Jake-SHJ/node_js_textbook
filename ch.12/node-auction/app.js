@@ -26,7 +26,7 @@ const sessionMiddleware = session({
   },
 });
 
-app.set("views", path.join(__dirname, "public"));
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.set("port", process.env.PORT || 8010);
 
