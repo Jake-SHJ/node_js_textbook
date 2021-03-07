@@ -79,7 +79,7 @@ router.post(
       end.setDate(end.getDate() + 1);
       // scheduleJob(실행 시각, 해당 시각이 되었을 때 수행할 콜백 함수)
       schedule.scheduleJob(end, async () => {
-        const success = await Auction.find({
+        const success = await Auction.findOne({
           where: { goodId: good.id },
           order: [["bid", "DESC"]],
         });
@@ -109,7 +109,7 @@ router.post(
 router.get("/good/:id", isLoggedIn, async (req, res, next) => {
   try {
     const [good, auction] = await Promise.all([
-      Good.find({
+      Good.findOne({
         where: { id: req.params.id },
         include: {
           model: User,
@@ -138,7 +138,7 @@ router.get("/good/:id", isLoggedIn, async (req, res, next) => {
 router.post("/good/:id/bid", isLoggedIn, async (req, res, next) => {
   try {
     const { bid, msg } = req.body;
-    const good = await Good.find({
+    const good = await Good.findOne({
       where: { id: req.params.id },
       include: { model: Auction },
       order: [[{ model: Auction }, "bid", "DESC"]],
