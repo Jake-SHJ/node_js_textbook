@@ -2,8 +2,9 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const schedule = require("node-schedule");
 
-const { Good, Auction, User } = require("../models");
+const { Good, Auction, User, sequelize } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 const router = express.Router();
@@ -67,11 +68,34 @@ router.post(
   async (req, res, next) => {
     try {
       const { name, price } = req.body;
-      await Good.create({
+      const good = await Good.create({
         ownerId: req.user.id,
         name,
-        img: req.file.filename,
+        img: req.file,
+        filename,
         price,
+      });
+      const end = new Date();
+      end.setDate(end.getDate() + 1);
+      // scheduleJob(실행 시각, 해당 시각이 되었을 때 수행할 콜백 함수)
+      schedule.scheduleJob(end, async () => {
+        const success = await Auction.find({
+          where: { goodId: good.id },
+          order: [["bid", "DESC"]],
+        });
+        await Good.update(
+          { soldId: success.userId },
+          { where: { id: good.id } }
+        );
+        await User.update(
+          {
+            money: sequelize.literal(`money - ${success.bid}`),
+            // 낙찰 금액만큼 보유자산에서 빼기
+          },
+          {
+            where: { id: success.userId },
+          }
+        );
       });
       res.redirect("/");
     } catch (error) {
