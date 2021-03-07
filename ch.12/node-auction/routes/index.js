@@ -71,8 +71,7 @@ router.post(
       const good = await Good.create({
         ownerId: req.user.id,
         name,
-        img: req.file,
-        filename,
+        img: req.file.filename,
         price,
       });
       const end = new Date();
