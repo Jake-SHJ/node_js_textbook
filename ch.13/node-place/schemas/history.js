@@ -13,3 +13,4 @@ const historySchema = new Schema({
 });
 
 module.exports = mongoose.model("History", historySchema);
+// TODO: history document 생성 안되는 이슈

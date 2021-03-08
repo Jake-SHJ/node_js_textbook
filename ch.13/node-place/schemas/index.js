@@ -32,6 +32,6 @@ module.exports = () => {
     connect();
   });
 
-  require("./favorite");
   require("./history");
+  require("./favorite");
 };
