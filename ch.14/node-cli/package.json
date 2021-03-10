@@ -2,12 +2,12 @@
   "name": "node-cli",
   "version": "0.0.1",
   "description": "nodejs cli program",
-  "main": "index.js",
+  "main": "template.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "ISC",
   "bin": {
-    "cli": "./index.js"
+    "cli": "./template.js"
   }
 }
